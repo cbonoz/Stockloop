@@ -1,0 +1,59 @@
+{
+  "intents": [
+    {
+      "intent": "CompanyPriceIntent",
+      "slots": [
+        {
+          "name": "Company",
+          "type": "LIST_OF_COMPANIES"
+        },
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE"
+        }
+      ]
+    },
+    {
+      "intent": "CompanyCompareIntent",
+      "slots": [
+        {
+          "name": "Company1",
+          "type": "LIST_OF_COMPANIES"
+        },
+        {
+          "name": "Company2",
+          "type": "LIST_OF_COMPANIES"
+        }
+      ]
+    },
+    {
+      "intent": "CompanyMetricIntent",
+      "slots": [
+        {
+          "name": "Metric",
+          "type": "LIST_OF_METRICS"
+        },
+        {
+          "name": "Company",
+          "type": "LIST_OF_COMPANIES"
+        },
+        {
+          "name": "Symbol",
+          "type": "LIST_OF_SYMBOLS"
+        }
+      ]
+    },
+    {
+      "intent": "AMAZON.RepeatIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}

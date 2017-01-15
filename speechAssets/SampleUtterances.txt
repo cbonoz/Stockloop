@@ -1,0 +1,32 @@
+HelloIntent say hello
+
+CompanyPriceIntent what is the closing price for {Company} on {Date}
+CompanyPriceIntent what is the closing price for {Company} on {Date}
+CompanyPriceIntent what is the price for {Company} on {Date}
+CompanyPriceIntent get closing price for {Company} on {Date}
+CompanyPriceIntent get price for {Company} on {Date}
+CompanyPriceIntent price for {Company} on {Date}
+CompanyPriceIntent what is the closing price for symbol {Symbol} on {Date}
+CompanyPriceIntent what is the closing price for symbol {Symbol} on {Date}
+CompanyPriceIntent what is the price for symbol {Symbol} on {Date}
+CompanyPriceIntent get closing price for symbol {Symbol} on {Date}
+CompanyPriceIntent get price for symbol {Symbol} on {Date}
+CompanyPriceIntent price for symbol {Symbol} on {Date}
+
+CompanyMetricIntent what is the {Metric} for symbol {Symbol}
+CompanyMetricIntent what is the {Metric} for symbol {Symbol}
+CompanyMetricIntent what is the {Metric} for symbol {Symbol}
+CompanyMetricIntent get {Metric} for symbol {Symbol}
+CompanyMetricIntent get {Metric} for symbol {Symbol}
+CompanyMetricIntent {Metric} for symbol {Symbol}
+
+CompanyMetricIntent what is the {Metric} for {Company}
+CompanyMetricIntent what is the {Metric} for {Company}
+CompanyMetricIntent what is the {Metric} for {Company}
+CompanyMetricIntent get {Metric} for {Company}
+CompanyMetricIntent get {Metric} for {Company}
+CompanyMetricIntent {Metric} for {Company}
+
+CompanyMetricIntent lookup {Metric} {Company}
+CompanyMetricIntent lookup {Metric} for {Company}
+CompanyMetricIntent lookup {Metric} for symbol {Symbol}
