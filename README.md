@@ -1,11 +1,16 @@
-# Sample AWS Lambda function for Alexa
-A simple [AWS Lambda](http://aws.amazon.com/lambda) function that demonstrates how to write a skill for the Amazon Echo using the Alexa SDK.
+# Stockloop AWS Lambda function for Alexa
+
+In Development.
+---
 
 ## Concepts
-This simple sample has no external dependencies or session management, and shows the most basic example of how to create a Lambda function for handling Alexa Skill requests.
+This Stockloop Alexa Skill has no external dependencies or session management, and can be used as example of how to create a Lambda function for handling Alexa Skill requests with a proxy to the Yahoo Finance API.
 
 ## Setup
-To run this example skill you need to do two things. The first is to deploy the example code in lambda, and the second is to configure the Alexa skill to use Lambda.
+To run this example skill you need to do three things. 
+1. npm install.
+2. Deploy the StockLoop code in lambda.
+3. Configure the Alexa skill to use Lambda.
 
 ### AWS Lambda Setup
 1. Go to the AWS Console and click on the Lambda link. Note: ensure you are in us-east or you won't be able to use Alexa with Lambda.
@@ -36,5 +41,5 @@ To run this example skill you need to do two things. The first is to deploy the 
 9. Your skill is now saved and once you are finished testing you can continue to publish your skill.
 
 ## Examples
-    User: "Alexa, tell StockLoop to lookup AMD"
-    Alexa: "AMD: Information..."
+    User: "Alexa, tell StockLoop to get the last closing price for AMD"
+    Alexa: "The last closing price for AMD is ${Price}."

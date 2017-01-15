@@ -1,17 +1,5 @@
 HelloIntent say hello
-
-CompanyPriceIntent what is the closing price for {Company} on {Date}
-CompanyPriceIntent what is the closing price for {Company} on {Date}
-CompanyPriceIntent what is the price for {Company} on {Date}
-CompanyPriceIntent get closing price for {Company} on {Date}
-CompanyPriceIntent get price for {Company} on {Date}
-CompanyPriceIntent price for {Company} on {Date}
-CompanyPriceIntent what is the closing price for symbol {Symbol} on {Date}
-CompanyPriceIntent what is the closing price for symbol {Symbol} on {Date}
-CompanyPriceIntent what is the price for symbol {Symbol} on {Date}
-CompanyPriceIntent get closing price for symbol {Symbol} on {Date}
-CompanyPriceIntent get price for symbol {Symbol} on {Date}
-CompanyPriceIntent price for symbol {Symbol} on {Date}
+HelloWorldIntent say hello world
 
 CompanyMetricIntent what is the {Metric} for symbol {Symbol}
 CompanyMetricIntent what is the {Metric} for symbol {Symbol}

@@ -36,7 +36,25 @@ var StockLoop = function () {
     AlexaSkill.call(this, APP_ID);
 };
 
+function toCamelCase(sentenceCase) {
+    var out = "";
+    sentenceCase.split(" ").forEach(function (el, idx) {
+        var add = el.toLowerCase();
+        out += (idx === 0 ? add : add[0].toUpperCase() + add.slice(1));
+    });
+    return out;
+};
+
 var yahooFinance = require('yahoo-finance');
+var companyToSymbolMap = {'apple': 'appl'};
+
+var getCompanyMetricString = function(company, metric, value) {
+    return "The ${metric} for ${company} is ${value}."
+}
+
+// TODO: Map from metric name utterance to yahoo finance field names.
+var metricMap = {'name': 'n', 'last trade date': 'd1', 'dividend yield': 'y', 'pe ratio': 'p', 'lastTradePriceOnly': 'l1'};
+var metricMapKeys = Object.keys(metricMap);
 
 // Extend AlexaSkill
 StockLoop.prototype = Object.create(AlexaSkill.prototype);
@@ -51,62 +69,107 @@ StockLoop.prototype.eventHandlers.onLaunch = function (launchRequest, session, r
 };
 
 StockLoop.prototype.intentHandlers = {
-    "CompanyCompareIntent": function (intent, session, response) {
-        // TODO: Implement comparison functionality for companies.
-        let company1Slot = intent.slots.Company1;
-        let company2Slot = intent.slots.Company2;
-        let metricSlot = intent.slots.Metric;
-        let symbolSlot = intent.slots.Symbol;
-    },
-    "CompanyPriceIntent": function (intent, session, response) {
-        // Get the price for the company or symbol by date.
-        let companySlot = intent.slots.Company;
-        let dateSlot = intent.slots.Date;
-        let symbolSlot = intent.slots.Symbol;
-    },
     "CompanyMetricIntent": function (intent, session, response) {
         // Get the latest metric information for the given company or symbol.
-        let companySlot = intent.slots.Company;
-        let metricSlot = intent.slots.Metric;
         let symbolSlot = intent.slots.Symbol;
-    },
-    "HelloIntent": function (intent, session, response) {
-        response.tellWithCard("Hello World!", "Hello World", "Hello World!");
-    },
-    "RecipeIntent": function (intent, session, response) {
-        var itemSlot = intent.slots.Item,
-            itemName;
-        if (itemSlot && itemSlot.value){
-            itemName = itemSlot.value.toLowerCase();
+        let metricSlot = intent.slots.Metric;
+        let companySlot = intent.slots.Company;
+
+        var symbol, metric, company;
+        if (symbolSlot && symbolSlot.value) {
+            symbol = symbolSlot.value.toLowerCase();
+        }
+        if (metricSlot && metricSlot.value) {
+            metric = metricSlot.value.toLowerCase();
+        }
+        if (companySlot && companySlot.value) {
+            company = companySlot.value.toLowerCase();
         }
 
-        var cardTitle = "Recipe for " + itemName,
-            recipe = recipes[itemName],
-            speechOutput,
-            repromptOutput;
-        if (recipe) {
-            speechOutput = {
-                speech: recipe,
-                type: AlexaSkill.speechOutputType.PLAIN_TEXT
-            };
-            response.tellWithCard(speechOutput, cardTitle, recipe);
-        } else {
-            var speech;
-            if (itemName) {
-                speech = "I'm sorry, I currently do not know the recipe for " + itemName + ". What else can I help with?";
-            } else {
-                speech = "I'm sorry, I currently do not know that recipe. What else can I help with?";
+        if (symbol == undefined) {
+            if (company != undefined) {
+                if (companyToSymbolMap.hasOwnProperty(company)) {
+                    symbol = companyToSymbolMap[company];
+                } else {
+                    // TODO: Attempt to fetch the symbol for the company or get closest existing match.
+                }
             }
-            speechOutput = {
-                speech: speech,
-                type: AlexaSkill.speechOutputType.PLAIN_TEXT
-            };
-            repromptOutput = {
-                speech: "What else can I help with?",
-                type: AlexaSkill.speechOutputType.PLAIN_TEXT
-            };
-            response.ask(speechOutput, repromptOutput);
         }
+        symbol = symbol.toUpperCase();
+
+        if (company == undefined) {
+            // TODO: Error
+        }
+        if (metric == undefined) {
+            // TODO: Error
+        }
+
+        var convertToYahooMetric = function(m) {
+            if (m.includes('price')) {
+                m = 'last trade price only';
+            } else if (m.includes('ratio')) {
+                m = 'pe ratio';
+            } else if (m.includes('dividend')) {
+                m = 'dividend yield';
+            } else if (m.includes('company')) {
+                m = 'name';
+            }
+            return m;
+        }
+
+        metric = convertToYahooMetric(metric);
+        var camelMetric = toCamelCase(metric);
+        var yahooFields;
+
+        if (metricMap.hasOwnProperty(camelMetric)) {
+            var yahooFields = ['s', 'n'];
+            var yahooKey = metricMap[camelMetric];
+            if (yahooKey != 'n') {
+                yahooFields.push(yahooKey);
+            }
+        }
+
+        yahooFinance.snapshot({
+            symbol: symbol,
+            fields: yahooFields  // ex: ['s', 'n', 'd1', 'l1', 'y', 'r']
+            }, function (err, snapshot) {
+                var speech;
+                if (err != undefined) {
+                    speech = "There was an error: " + err.toString();
+                } else {
+                    let value = snapshot[camelMetric];
+                    speech = getCompanyMetricString(snapshot.name, metric, value) + " What else can I help with?"
+                }
+                speechOutput = {
+                    speech: speech,
+                    type: AlexaSkill.speechOutputType.PLAIN_TEXT
+                };
+                repromptOutput = {
+                    speech: "What else can I help with?",
+                    type: AlexaSkill.speechOutputType.PLAIN_TEXT
+                };
+                response.ask(speechOutput, repromptOutput); 
+            /*
+            {
+                symbol: 'AAPL',
+                name: 'Apple Inc.',
+                lastTradeDate: '11/15/2013',
+                lastTradePriceOnly: '524.88',
+                dividendYield: '2.23',
+                peRatio: '13.29'
+            }
+            */
+        });
+
+    },
+
+    "HelloIntent": function (intent, session, response) {
+        response.tell("Hello");
+    },
+
+    "HelloWorldIntent": function (intent, session, response) {
+        response.tell("Hello World!")
+        // response.tellWithCard("Hello World!", "Hello World", "Hello World!");
     },
 
     "AMAZON.StopIntent": function (intent, session, response) {
@@ -120,8 +183,9 @@ StockLoop.prototype.intentHandlers = {
     },
 
     "AMAZON.HelpIntent": function (intent, session, response) {
-        var speechText = "You can ask questions such as, what's the recipe, or, you can say exit... Now, what can I help you with?";
-        var repromptText = "You can say things like, what's the recipe, or you can say exit... Now, what can I help you with?";
+        var question = "Your StockLoop Question";
+        var speechText = "You can ask questions such as, ${question}, or, you can say exit... Now, what can I help you with?";
+        var repromptText = "You can say things like, ${question}, or you can say exit... Now, what can I help you with?";
         var speechOutput = {
             speech: speechText,
             type: AlexaSkill.speechOutputType.PLAIN_TEXT
